@@ -27,7 +27,7 @@
 
 #### 3. Посмотреть готовые реализации бибилиотек для работы с postgres:
 
-- [node-postgres][https://github.com/brianc/node-postgres];
-- [postgres][https://github.com/porsager/postgres].
+- [node-postgres](https://github.com/brianc/node-postgres);
+- [postgres](https://github.com/porsager/postgres).
 
 P.S. Это будет долгий путь!
