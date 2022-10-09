@@ -1,40 +1,33 @@
 'use strict'
 
+import { error } from 'console'
 import net from 'net'
 
-const options = {
-  host: '127.0.0.1',
-  port: 2000,
-}
-
-const options2 = {
-  host: '127.0.0.1',
-  port: 3000,
-}
+// Задаём парметры сокетов к которым будем подключаться.
+// Если сокет, к которому будем
+const options = [
+  {
+    host: '127.0.0.1',
+    port: 2000,
+  },
+  {
+    host: '127.0.0.1',
+    port: 3000,
+  },
+]
 
 const client = new net.Socket()
-client.connect(options, () => {
-  console.log(`Client connected from Server on `)
-  client.write('Hello, server! Love, Client.')
+
+client.on('data', (data) => {
+  console.log(`С сервера пришло сообщение: ` + data)
 })
 
-const client2 = new net.Socket()
-client2.connect(options2, () => {
-  console.log(`Client connected from Server2 on `)
-  client.write('Hello, server2! Love, Client.')
+client.connect(options[0], () => {
+  const opt = options[0]
+  console.log(`Клиент подключился к серверу на сокет: ${opt.host}:${opt.port}`)
+  client.write('Привет от клиента!)))))')
 })
 
-/*client.connect(options2, () => {
-  console.log(`Client connected from Server3 on `)
-  client.write('Hello, server3! Love, Client.')
-})*/
-
-/*
-client.on('data', data => {
-  console.log('Получена' + data)
-  client.destroy(); // убивает слиета после ответа сервера
-})
-
-client.on('close', ()=> {
+client.on('close', () => {
   console.log('Соединение закрыто')
-})*/
+})
