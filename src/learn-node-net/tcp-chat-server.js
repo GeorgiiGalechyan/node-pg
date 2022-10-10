@@ -2,20 +2,14 @@
 
 import net from 'net'
 
-const optionsServer = {
-  host: '127.0.0.1',
-  port: 3000,
-}
+const usersSockets = []
+const options = { host: '0.0.0.0', port: 2002 }
 
-const optionConnection = {
-  host: '127.0.0.1',
-  port: 2000,
-  readableAll: true,
-}
+const chatServer = net.createServer()
 
-const server2 = net.createServer(() => {})
+const connection = (socket) => {}
 
-server2.listen(optionsServer, (socket) => {
+server2.listen(options, (socket) => {
   console.log(`Server2 listening on ${optionsServer.host}:${optionsServer.port}`)
 })
 

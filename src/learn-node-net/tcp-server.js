@@ -1,6 +1,5 @@
 'use strict'
 
-import { Socket } from 'dgram'
 import net from 'net'
 
 const options = {
@@ -8,31 +7,24 @@ const options = {
   port: 2000,
 }
 
-// Если вывести в консоль массив openSockets после добавления в него сокетов, то мы увидим массив сокетов. Сокет выглядит как объект большого размера с кучей полей.
-const openSockets = []
+// Будем сохранять ктивные клиентские сокеты в массив и удалять неактивные.
+const clients = []
+
+const connection = (socket) => {
+  clients.push(socket)
+  socket.write('Привет от Сервера!)')
+  socket.on('data', onData)
+  socket.on('error', (err) => {
+    console.error('Socket error', err)
+  })
+}
 
 const onData = (data) => {
   console.log(`С сервера пришло сообщение: ` + data)
 }
 
 // Экземпляр сервера создастся ДЛЯ КАЖДОГО НОВОГО СОЕДИНЕНИЯ при подключении клиента к серверу.
-const server = net.createServer((socket) => {
-  openSockets.push(socket)
-  socket.write('Привет от Сервера!)')
-  socket.on('data', onData)
-  socket.on('error', (err) => {
-    console.error('Socket error', err)
-  })
-
-  socket.on('end', (socket) => {
-    // Удаляем отключившийся сокет из массива openSockets
-    openSockets = openSockets.filter((s) => {
-      return s !== socket
-    })
-    console.log('Client disconnected!')
-    console.log(openSockets)
-  })
-})
+const server = net.createServer((socket) => {})
 
 server.on('data', onData)
 
@@ -44,20 +36,24 @@ server.on('connection', (socket) => {
   )
 })
 
-// Вариант реализации события 'data', если нам нужно отправить сообщение всем клиентам, подключенны к сокету. Можно применить при создании элементарного чата.
-/*server.on('data', function (data) {
-  openSockets.forEach((socket) => {
-    socket.write(data.toString())
-  })
-})*/
-
 // Обрабатываем событие 'end' - отключение пользователя от сокета
+socket.on('end', (socket) => {
+  // Удаляем отключившийся сокет из массива openSockets
+  clients = clients.filter((s) => {
+    return s !== socket
+  })
+  console.log('Client disconnected!')
+  console.log(openSockets)
+})
 
-
-// Обрабатываем ошибки... но что-то идет не так
+// Обрабатываем ошибки... Событие  error
 server.on('error', (err) => {
   console.error('Server error', err)
 })
+
+// Запускается после полного закрытия сокета.
+// Запускается автоматически после события 'error'.
+server.on('close', () => {})
 
 server.listen(options, () => {
   console.log(`Server listening on ${options.host}:${options.port}`)

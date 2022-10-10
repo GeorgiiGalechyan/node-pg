@@ -30,4 +30,4 @@
 - [node-postgres](https://github.com/brianc/node-postgres);
 - [postgres](https://github.com/porsager/postgres).
 
-P.S. Это будет долгий путь!
+P.S. Это будет долгий путь!🤪
